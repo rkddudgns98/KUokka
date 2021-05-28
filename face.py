@@ -73,6 +73,57 @@ while True:
     face_roi = np.clip(face_roi, 0, 10000)
 
 
+    # ------------------------------------------------------------------
+    # ----------------------------face angle----------------------------
+    # ------------------------------------------------------------------
+  
+    # eyes
+    left_eye = [int((shape_2d[43][0]+shape_2d[44][0]+shape_2d[46][0]+shape_2d[47][0])/4), int((shape_2d[43][1]+shape_2d[44][1]+shape_2d[46][1]+shape_2d[47][1])/4)]
+    right_eye = [int((shape_2d[37][0]+shape_2d[38][0]+shape_2d[40][0]+shape_2d[41][0])/4), int((shape_2d[37][1]+shape_2d[38][1]+shape_2d[40][1]+shape_2d[41][1])/4)]
+    cv2.circle(img, center=tuple(left_eye), radius=1, color=(0, 0, 255), thickness=2, lineType=cv2.LINE_AA)
+    cv2.circle(img, center=tuple(right_eye), radius=1, color=(0, 0, 255), thickness=2, lineType=cv2.LINE_AA)
+
+    # nose
+    nose = shape_2d[30]
+    cv2.circle(img, center=tuple(nose), radius=1, color=(0, 0, 255), thickness=2, lineType=cv2.LINE_AA)
+    
+    # direction - left or right
+    # 0 - center, 1 - left, 2 - right
+    if (left_eye[0] - nose[0]) > (nose[0] - right_eye[0]):
+      if (left_eye[0] - nose[0]) - (nose[0] - right_eye[0]) > 20:
+        direction = 2   #right
+      else:
+        direction = 0   #center
+    else:
+      if (nose[0] - right_eye[0] - (left_eye[0] - nose[0])) > 20:
+        direction = 1   #left   
+      else:
+        direction = 0   #center
+
+    # location - top or bottom
+    # 0 - center, 1 - top, 2 - bottom
+    height, width, channel = img.shape
+    center = [center_x, center_y]
+
+    if center[1] > height/2:
+      if center[1] - height/2 > 20:
+          location = 2   # bottom
+      else:
+          location = 0   # center
+    else:
+        if height/2 - center[1] > 20:
+          location = 1   # top
+        else:
+          location = 0   # center
+    
+    #os.system('cls')
+    #print("direction = ", direction) 
+    #print("location = ", location) 
+
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+
 
   # visualize
   #cv2.imshow('original', ori)
