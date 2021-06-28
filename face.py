@@ -2,6 +2,10 @@ import cv2, dlib
 import numpy as np
 import sys, os
 
+# direction and location
+direction = 0   # 얼굴 방향 (왼쪽, 오른쪽)
+location = 0    # 얼굴 위치 (위쪽, 아래쪽)
+
 # resize scaler
 scaler = 1
 
@@ -37,6 +41,18 @@ while True:
   # no faces
   if len(faces) == 0:
     print('no faces!')
+  
+    os.system('cls')
+    print("direction = ", direction) 
+    print("location = ", location) 
+
+    #if angle over 45
+    if direction == 1:    # 만약 얼굴이 왼쪽으로 돌아갔는데 얼굴을 찾을 수 없을 때 
+          direction = 3   # 왼쪽으로 45도 이상일 경우
+    elif direction == 2:  # 만약 얼굴이 오른쪽으로 돌아갔는데 얼굴을 찾을 수 없을 때
+          direction = 4   # 오른쪽으로 45도 이상일 경우
+    elif direction == 0:  # 시작부터 얼굴을 찾을 수 없을 때
+          direction = 5   # 얼굴을 못 찾는 경우
 
   # find facial landmarks
   for face in faces:
@@ -91,14 +107,14 @@ while True:
     # 0 - center, 1 - left, 2 - right
     if (left_eye[0] - nose[0]) > (nose[0] - right_eye[0]):
       if (left_eye[0] - nose[0]) - (nose[0] - right_eye[0]) > 20:
-        direction = 2   #right
+        direction = 2   # right
       else:
-        direction = 0   #center
+        direction = 0   # center
     else:
       if (nose[0] - right_eye[0] - (left_eye[0] - nose[0])) > 20:
-        direction = 1   #left   
+        direction = 1   # left   
       else:
-        direction = 0   #center
+        direction = 0   # center
 
     # location - top or bottom
     # 0 - center, 1 - top, 2 - bottom
@@ -116,9 +132,9 @@ while True:
         else:
           location = 0   # center
     
-    #os.system('cls')
-    #print("direction = ", direction) 
-    #print("location = ", location) 
+    os.system('cls')
+    print("direction = ", direction) 
+    print("location = ", location) 
 
     # ------------------------------------------------------------------
     # ------------------------------------------------------------------
