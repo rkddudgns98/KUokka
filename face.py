@@ -41,18 +41,22 @@ while True:
   # no faces
   if len(faces) == 0:
     print('no faces!')
-  
-    os.system('cls')
-    print("direction = ", direction) 
-    print("location = ", location) 
 
-    #if angle over 45
-    if direction == 1:    # 만약 얼굴이 왼쪽으로 돌아갔는데 얼굴을 찾을 수 없을 때 
-          direction = 3   # 왼쪽으로 45도 이상일 경우
-    elif direction == 2:  # 만약 얼굴이 오른쪽으로 돌아갔는데 얼굴을 찾을 수 없을 때
-          direction = 4   # 오른쪽으로 45도 이상일 경우
-    elif direction == 0:  # 시작부터 얼굴을 찾을 수 없을 때
-          direction = 5   # 얼굴을 못 찾는 경우
+    # if angle over 45
+    if direction == 1 :    # 만약 얼굴이 왼쪽으로
+          direction = 3    # 45도 이상 넘어간 경우
+    elif direction == 2 :  # 만약 얼굴이 오른쪽으로
+          direction = 4    # 45도 이상 넘어간 경우
+    elif direction == 0 :  # 시작부터 얼굴을 찾을 수 없을 때
+          direction = 5    # 얼굴을 못찾는 경우
+
+    # if face over screen
+    if location == 1 :    # 만약 얼굴이 위쪽으로
+          location = 3    # 넘어간 경우
+    elif location == 2 :  # 만약 얼굴이 아래쪽으로
+          location = 4    # 넘어간 경우
+    elif location == 0 :  # 시작부터 얼굴을 찾을 수 없을 때
+          location = 5    # 얼굴을 못찾는 경우
 
   # find facial landmarks
   for face in faces:
@@ -116,11 +120,15 @@ while True:
       else:
         direction = 0   # center
 
+    # center_screen, center_face
+    height, width, channel = img.shape
+    center_screen = [int(width/2), int(height/2)]
+    center = [center_x, center_y]
+    cv2.circle(img, center=tuple(center_screen), radius=1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+    cv2.circle(img, center=tuple(center), radius=1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+
     # location - top or bottom
     # 0 - center, 1 - top, 2 - bottom
-    height, width, channel = img.shape
-    center = [center_x, center_y]
-
     if center[1] > height/2:
       if center[1] - height/2 > 20:
           location = 2   # bottom
@@ -130,16 +138,51 @@ while True:
         if height/2 - center[1] > 20:
           location = 1   # top
         else:
-          location = 0   # center
+          location = 0   # center 
+
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+  
+
+  # ------------------------------------------------------------------
+  # ------------------------------result------------------------------
+  # ------------------------------------------------------------------
+  
+  # 각 경우에 맞게 모터 제어 필요
+  os.system('cls')
+
+  # direction
+  if direction == 0 :
+        print("direction : center")
+  elif direction == 1 :
+        print("direction : left") 
+  elif direction == 2 :
+        print("direction : right")
+  elif direction == 3 :
+        print("direction : left over")
+  elif direction == 4 :
+        print("direction : right over")
+  elif direction == 5 :
+        print("direction : no face")
     
-    os.system('cls')
-    print("direction = ", direction) 
-    print("location = ", location) 
+  # location
+  if location == 0 :
+        print("location : center")
+  elif location == 1 :
+        print("location : top")  
+  elif location == 2 :
+        print("location : bottom") 
+  elif location == 3 :
+        print("location : top over")
+  elif location == 4 :
+        print("location : bottom over")
+  elif location == 5 :
+        print("location : no face")
 
-    # ------------------------------------------------------------------
-    # ------------------------------------------------------------------
-    # ------------------------------------------------------------------
-
+  # ------------------------------------------------------------------
+  # ------------------------------------------------------------------
+  # ------------------------------------------------------------------
 
   # visualize
   #cv2.imshow('original', ori)
