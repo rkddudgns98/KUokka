@@ -1,10 +1,13 @@
 import cv2, dlib
 import numpy as np
 import sys, os
+from datetime import datetime
 
 # direction and location
 direction = 0   # 얼굴 방향 (왼쪽, 오른쪽)
 location = 0    # 얼굴 위치 (위쪽, 아래쪽)
+n_face = 0
+y_face = 0
 
 # resize scaler
 scaler = 1
@@ -41,6 +44,14 @@ while True:
   # no faces
   if len(faces) == 0:
     print('no faces!')
+    
+    # ------------------------------------------------------------------
+    # ----------------------------no-face-------------------------------
+    # ------------------------------------------------------------------
+    
+    # time
+    now = datetime.now()
+    n_face = int(now.second)
 
     # if angle over 45
     if direction == 1 :    # 만약 얼굴이 왼쪽으로
@@ -57,6 +68,11 @@ while True:
           location = 4    # 넘어간 경우
     elif location == 0 :  # 시작부터 얼굴을 찾을 수 없을 때
           location = 5    # 얼굴을 못찾는 경우
+    
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+
 
   # find facial landmarks
   for face in faces:
@@ -91,6 +107,19 @@ while True:
     # compute face roi
     face_roi = np.array([int(min_coords[1] - face_size / 2), int(max_coords[1] + face_size / 2), int(min_coords[0] - face_size / 2), int(max_coords[0] + face_size / 2)])
     face_roi = np.clip(face_roi, 0, 10000)
+
+    
+
+    # ------------------------------------------------------------------
+    # -------------------------------time-------------------------------
+    # ------------------------------------------------------------------
+
+    now = datetime.now()
+    y_face = int(now.second)
+
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
 
 
     # ------------------------------------------------------------------
@@ -152,6 +181,9 @@ while True:
   # 각 경우에 맞게 모터 제어 필요
   os.system('cls')
 
+  # time
+  print(n_face - y_face)
+
   # direction
   if direction == 0 :
         print("direction : center")
@@ -165,7 +197,7 @@ while True:
         print("direction : right over")
   elif direction == 5 :
         print("direction : no face")
-    
+
   # location
   if location == 0 :
         print("location : center")
